@@ -1,0 +1,100 @@
+#Feed the Dragon
+import pygame
+
+#initialize pygame
+pygame.init()
+
+#define game constants
+WINDOW_WIDTH = 1200
+WINDOW_HEIGHT = 600
+
+FPS = 60
+
+RED = pygame.Color(255,0,0)
+GREEN = pygame.Color(0,255,0)
+WHITE = pygame.Color(255,255,255)
+
+MAX_LIVES = 5
+DEFAULT_SCORE = 0
+COIN_VELOCITY = 10
+DRAGON_VELOCITY = 10
+
+#create a window and set the title
+display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+pygame.display.set_caption('Feed the Dragon')
+
+#setup the background
+background = pygame.image.load('d:/feed_the_dragon/dragon_night.jpg')
+background_rect = background.get_rect()
+background_rect.topleft = (0,0)
+
+#setup the actors
+coin = pygame.image.load('d:/feed_the_dragon/coin.png')
+coin_rect = coin.get_rect()
+coin_rect.center = (WINDOW_WIDTH//2, WINDOW_HEIGHT//2)
+
+dragon = pygame.image.load('d:/feed_the_dragon/dragon.png')
+dragon_rect = dragon.get_rect()
+dragon_rect.center = (WINDOW_WIDTH//2 + 100, WINDOW_HEIGHT//2)
+
+#setup the sound and music
+pickup = pygame.mixer.Sound('d:/feed_the_dragon/pickup.wav')
+loss = pygame.mixer.Sound('d:/feed_the_dragon/loss.wav')
+
+pygame.mixer.music.load('d:/feed_the_dragon/background_music.mp3')
+pygame.mixer.music.set_volume(0.7)
+pygame.mixer.music.play(-1) #-1 infinte loop
+
+#game values
+current_player_lives = MAX_LIVES
+current_player_score = DEFAULT_SCORE
+
+#font
+game_font = pygame.font.Font('d:/feed_the_dragon/AttackGraffiti.ttf', 32) #fontname, fontsize
+
+#texts
+lives = game_font.render('Lives : ' + str(current_player_lives), True,  GREEN)
+lives_rect = lives.get_rect()
+lives_rect.top = 10
+lives_rect.left = 50
+
+title = game_font.render('Feed the Dragon',True, GREEN)
+title_rect = title.get_rect()
+title_rect.top = 10
+title_rect.centerx = WINDOW_WIDTH//2
+
+score = game_font.render('Score : ' + str(current_player_score), True,  GREEN)
+score_rect = score.get_rect()
+score_rect.top = 10
+score_rect.right = WINDOW_WIDTH - 50
+
+#define a main game loop (life of the game)
+running = True
+clock = pygame.time.Clock()
+while running:
+    #apply the background
+    display_surface.blit(background, background_rect)
+
+    #read the events
+    for ev in pygame.event.get():
+        if ev.type == pygame.QUIT:
+            running = False
+
+    #draw the actors
+    display_surface.blit(coin, coin_rect)
+    display_surface.blit(dragon, dragon_rect)
+
+    #draw the HUD
+    display_surface.blit(lives, lives_rect)
+    display_surface.blit(title, title_rect)
+    display_surface.blit(score, score_rect)
+
+    #refresh
+    pygame.display.update()
+
+    #to achieve cooperative multitasking
+    #to make the game run at the same speed across different CPU's
+    clock.tick(FPS)
+
+#deallocate
+pygame.quit()
